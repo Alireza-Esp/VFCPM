@@ -38,3 +38,6 @@ def load_standardizer(url: str, file_name: str):
         file.write(standardizer_file.content)
         
     return pickle.load(open(file_name, "rb"))
+
+def submit_clicked():
+    return True

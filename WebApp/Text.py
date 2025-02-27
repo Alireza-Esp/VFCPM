@@ -4,12 +4,16 @@ shif_enter = html.unescape("<br />")
 fuel_type_list = ["Regular gasoline", "Premium gasoline", "Diesel", "Ethanol (E85)",
                   "Natural Gas"]
 
-transmission_type_list = ["Manual (M)", "Automatic (A)", "Automated Manual (AM)",
-                          "Automatic With Select Shift (AS)", "Continuously Variable (AV)"]
+transmission_type_list = ["M", "A", "AM", "AS", "AV"]
+# transmission_type_list = ["Manual (M)", "Automatic (A)", "Automated Manual (AM)",
+                            # "Automatic With Select Shift (AS)", "Continuously Variable (AV)"]
 
-vehicle_class_list = ["MiniCompact", "SubCompact", "Compact", "Mid-Size", "Full-Size",
-                      "Station Wagon", "Pickup Truck", "MiniVan", "Van", "Sport Utility Vehicle (SUV)",
-                      "Two-Seater", "Special Purpose Vehicle"]
+vehicle_class_list = ["Minicompact", "Subcompact", "Compact", "Mid-size", "Full-size",
+                      "Station wagon", "Pickup truck", "Minivan", "Van", "Sport utility vehicle",
+                      "Two-seater", "Special purpose vehicle"]
+# vehicle_class_list = ["MiniCompact", "SubCompact", "Compact", "Mid-Size", "Full-Size",
+                    #   "Station Wagon", "Pickup Truck", "MiniVan", "Van", "Sport Utility Vehicle (SUV)",
+                    #   "Two-Seater", "Special Purpose Vehicle"]
 
 manufacturer_list = ['Chevrolet', 'Ford', 'BMW', 'GMC', 'Mercedes-Benz', 'Toyota', 'Dodge',
                      'Porsche', 'Audi', 'Volkswagen', 'Nissan', 'Mazda', 'Honda', 'Hyundai', 'Jeep', 'Subaru',

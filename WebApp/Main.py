@@ -24,10 +24,12 @@ st.markdown(
 st.divider()
 
 st.header("Prediction With Model")
+
 model_fuel = load_fuel_model(fuel_model_url, "model-fuel.pkl")
 model_CO2 = load_CO2_model(CO2_model_url, "model-CO2.pkl")
 encoder = load_encoder(encoder_url, "encoder.pkl")
 standardizer = load_standardizer(standardizer_url, "standardizer.pkl")
+
 st.markdown(
     f'<div style="text-align: justify;">{prediction_text}</div>', unsafe_allow_html=True)
 st.container(border=False, height=1)
@@ -59,3 +61,28 @@ model_year = st.number_input("Model Year",
                               value=2025)
 manufacturer = st.selectbox("Manufacturer",
                             options=manufacturer_list)
+
+result = False
+a1 = st.button("submit")
+result = submit_clicked()
+
+if result:
+    query_x_cat_ENCODED = pd.DataFrame(encoder.transform([[manufacturer, vehicle_class, transmission_type, fuel_type]]).toarray())
+    query_x_cat_ENCODED.columns = query_x_cat_ENCODED.columns.astype(str)
+    query_x_num = pd.DataFrame({"Model year":[model_year], "Engine size (L)":[engine_size],
+                                "Cylinders":[number_of_cylinders], "Number of gears":[number_of_gears]})
+    query_x = pd.concat([query_x_cat_ENCODED, query_x_num], axis=1)
+    query_x_ENCODED_STANDARDED = standardizer.transform(query_x)
+
+    st.dataframe(query_x_cat_ENCODED)
+    st.dataframe(query_x_num)
+    st.dataframe(query_x)
+    st.dataframe(query_x_ENCODED_STANDARDED)
+
+    query_predicted_fuel = model_fuel.predict(query_x_ENCODED_STANDARDED)[0][0]
+    query_predicted_CO2 = model_CO2.predict(query_x_ENCODED_STANDARDED)[0][0]
+    
+    result = False
+
+st.text(query_predicted_fuel)
+st.text(query_predicted_CO2)
