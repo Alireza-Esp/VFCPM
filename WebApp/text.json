@@ -1,0 +1,102 @@
+{
+    "sidebar_css" : "<style>[data-testid=\"stSidebar\"]{min-width: 400px;max-width: 400px;}</style>",
+
+    "sidebar_text1" : "<div style=\"text-align: justify;\">🔹 This project has been defined as the \"Final Undergraduate Project\" and carried out  by:</div>",
+
+    "sidebar_text2" : "👨‍🎓 Alireza Esmaeilpour Peynavandi\n👨‍🏫 Supervising Professor: Dr. Alyari\n⚙️ Field of Study:\n\t   Mechanical Engineernig - Automotive Subfield\n🏬 University:\n\t   Shahid Rajaee Teacher Training University\n📧 Email:\n\t   Alireza.esp07@gmail.com\n🌐 Website: \n\t   Alireza-Esp.ir\n🔗 GitHub:\n\t   Github.com/Alireza-Esp\n\n\n\nSemester 8 | 1403-1404",
+
+    "header1" : "Welcome To VFCP Webapp!",
+
+    "welcome_text" : "<div style=\"text-align: justify;\">Whats the meaninig of VFCP? VFCP stands for \"Vehicle Fuel Consumption Predictor\". this is a Machine Learning Model that predict the rate of fuel consumption and CO2 emission of a vehcile with respect to it's some characteristics like \"Engine Size\", \"Number of Cylinders\", \"Fuel Type\" and ... . Detialed informations of the project are explained in references. Are you excited? Let's use the model!</div>",
+
+    "header2" : "How To Use VFCP Model?",
+
+    "help_text" : "<div style=\"text-align: justify;\">Well, the VFCP is very easy to use! as previously satated, the model has some features; that listed below:<br />▪️ Number Of Cylinders<br />▪️ Engine Size<br />▪️ Fuel Type<br />▪️ Transmission Type<br />▪️ Number Of Gears<br />▪️ Vehicle Class<br />▪️ Model Year<br />▪️ Manufacturer<br />In fact, this features is related to the vhicles that the model has trained from; and if you want to make a prediction with model, you should pass this features to the model and see that it predicts the \"Combined Fuel Consumption\" and \"CO2 Emission\" of your intended sample.<br />However, there are some considerations that you should keep in mind. For example it's better to enter interval [1995,2025] for \"Model Year\" feature however that the model can make a prediction even if the values be outside of the interval. Or it's good enter standard values for \"Number Of Cylinders\" featur; you know that probably we haven't \"11 Cylinders\" vehicle.</div>",
+
+    "header3" : "Make A Prediction With The Model!",
+
+    "prediction_text" : "<div style=\"text-align: justify;\">Enter your intended features for making a prediction...</div>",
+
+    "number_of_cylinders" : {
+        "label" : "Number Of Cylinders",
+        "options" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        "value" : 4
+    },
+
+    "engine_size" : {
+        "label" : "Engine Size (cc)",
+        "max_value" : 12000,
+        "min_value" : 500,
+        "step": 1,
+        "value" : 2400
+    },
+
+    "fuel_type" : {
+        "label" : "Fuel Type",
+        "options" : ["Regular gasoline", "Premium gasoline", "Diesel", "Ethanol (E85)", "Natural Gas"],
+        "default" : "Regular gasoline"
+    },
+
+    "transmission_type" : {
+        "label" : "Transmission Type \n\nM=Manual | A=Automatic | AM=Automated Manual | AS=Automatic With Select Shift | AV=Continuously Variable",
+        "options" : ["M", "A", "AM", "AS", "AV"]
+    },
+
+    "number_of_gears" : {
+        "label" : "Number Of Gears",
+        "max_value" : 12,
+        "min_value" : 1,
+        "step": 1,
+        "value" : 6
+    },
+
+    "vehicle_class" : {
+        "label" : "Vehicle Class",
+        "options" : ["Minicompact", "Subcompact", "Compact", "Mid-size", "Full-size", "Station wagon", "Pickup truck", "Minivan", "Van", "Sport utility vehicle", "Two-seater", "Special purpose vehicle"]
+    },
+
+    "model_year" : {
+        "label" : "Model Year",
+        "max_value" : 2030,
+        "min_value" : 1980,
+        "step": 1,
+        "value" : 2025
+    },
+
+    "manufacturer" : {
+        "label" : "Manufacturer",
+        "options" : ["Chevrolet", "Ford", "BMW", "GMC", "Mercedes-Benz", "Toyota", "Dodge", "Porsche", "Audi", "Volkswagen", "Nissan", "Mazda", "Honda", "Hyundai", "Jeep", "Subaru", "Volvo", "Kia", "Lexus", "Cadillac", "Chrysler", "MINI", "Jaguar", "Pontiac", "Buick", "Mitsubishi", "Acura", "Infiniti", "Land Rover", "Suzuki", "Lincoln", "Saab", "Saturn", "Bentley", "Ram", "Maserati", "Rolls-Royce", "Lamborghini", "Aston Martin", "Ferrari", "Plymouth", "FIAT", "Oldsmobile", "Genesis", "Alfa Romeo", "Mercury", "Isuzu", "Scion", "Eagle", "Daewoo", "smart", "Hummer", "Geo", "Bugatti"]
+    },
+
+    "predict_button" : {
+        "label" : "Predict!",
+        "type" : "primary"
+    },
+
+    "header4" : "Prediction Results Are Ready!",
+
+    "city_section_title" : "<div style=\"text-align: justify;\">For Fuel Consumption in City:</div>",
+
+    "city_lr_predict_text" : "<div style=\"text-align: justify;\">LR: {}:</div>",
+
+    "query_message_text" : "Processing The Qurey...",
+
+    "fields_empty_message_text" : "Please fill all fields...",
+
+    "city_prediction" : "▪️ For City Fuel Consumption: [Lit/100Km]",
+
+    "lr_prediction_text" : "LR : ",
+
+    "knn_prediction_text" : "KNN : ",
+
+    "dt_prediction_text" : "DT : ",
+
+    "final_prediction_text" : "Final (Mean) : ",
+
+    "highway_prediction" : "▪️ For Highway Fuel Consumption: [Lit/100Km]",
+
+    "combined_prediction" : "▪️ For Combined Fuel Consumption: [Lit/100Km]",
+
+    "co2_prediction" : "▪️ For Co2 Emission: [g/Km]"
+
+}

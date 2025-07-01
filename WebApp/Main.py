@@ -1,89 +1,166 @@
+"""
+Streamlit application for the Vehicle Fuel Consumption Predictor (VFCP).
+Provides UI for selecting vehicle features and displays fuel consumption
+and CO2 emission predictions from multiple ML models.
+"""
 import streamlit as st
 import numpy as np
 import pandas as pd
-from Text import *
-from Function import *
+import json
+import statistics
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from functions import load_bin_file, preprocess_query, predict
 
-st.markdown(sidebar_css, unsafe_allow_html=True)
-st.sidebar.markdown(
-    f'<div style="text-align: justify;">{sidebar_text1}</div>', unsafe_allow_html=True)
+# Load UI text and styles from external JSON
+text_data = json.load(open("text.json", "rb"))
+
+# State variables
+results_showed = False
+is_empty = True
+
+# Sidebar configuration
+st.sidebar.markdown(text_data["sidebar_css"], unsafe_allow_html=True)
+st.sidebar.markdown(text_data["sidebar_text1"], unsafe_allow_html=True)
 st.sidebar.text("\n")
-st.sidebar.text(sidebar_text2)
+st.sidebar.text(text_data["sidebar_text2"])
 
-st.header("Welcome To VFCP Webapp!")
-st.markdown(
-    f'<div style="text-align: justify;">{welcome_text}</div>', unsafe_allow_html=True)
-st.container(height=3, border=False)
+# Page headers and instructions
+st.header(text_data["header1"])
+st.markdown(text_data["welcome_text"], unsafe_allow_html=True)
 st.divider()
 
-st.header("How To Use VFCP Model?")
-st.markdown(
-    f'<div style="text-align: justify;">{help_text}</div>', unsafe_allow_html=True)
+st.header(text_data["header2"])
+st.markdown(text_data["help_text"], unsafe_allow_html=True)
 st.divider()
 
-st.header("Prediction With Model")
+st.header(text_data["header3"])
 
-model_fuel = load_fuel_model(fuel_model_url, "model-fuel.pkl")
-model_CO2 = load_CO2_model(CO2_model_url, "model-CO2.pkl")
-encoder = load_encoder(encoder_url, "encoder.pkl")
-standardizer = load_standardizer(standardizer_url, "standardizer.pkl")
+# Load encoders, scalers, and ML models with spinners
+with st.spinner("Loading Encoder..."):
+    encoder = load_bin_file("encoder.pkl")
+with st.spinner("Loading Standardizer..."):
+    standardizer = load_bin_file("standardizer.pkl")
 
-st.markdown(
-    f'<div style="text-align: justify;">{prediction_text}</div>', unsafe_allow_html=True)
+models = {
+    'city_lr': 'model_city_lr.pkl',
+    'highway_lr': 'model_highway_lr.pkl',
+    'combined_lr': 'model_combined_lr.pkl',
+    'co2_lr': 'model_co2_lr.pkl',
+    'city_knn': 'model_city_knn.pkl',
+    'highway_knn': 'model_highway_knn.pkl',
+    'combined_knn': 'model_combined_knn.pkl',
+    'co2_knn': 'model_co2_knn.pkl',
+    'city_dt': 'model_city_dt.pkl',
+    'highway_dt': 'model_highway_dt.pkl',
+    'combined_dt': 'model_combined_dt.pkl',
+    'co2_dt': 'model_co2_dt.pkl'
+}
+
+loaded_models = {}
+for key, fname in models.items():
+    with st.spinner(f"Loading {key.replace('_', ' ').title()} model..."):
+        loaded_models[key] = load_bin_file(fname)
+
+# Prompt user to input vehicle features
+st.markdown(text_data["prediction_text"], unsafe_allow_html=True)
 st.container(border=False, height=1)
-number_of_cylinders = st.select_slider("Number Of Cylinders",
-                                       options=range(1, 25),
-                                       value=4)
-engine_size = st.number_input("Engine Size (cc)",
-                              max_value=14000,
-                              min_value=500,
-                              step=1,
-                              value=2400)
-fuel_type = st.segmented_control("Fuel Type",
-                                 options=fuel_type_list,
-                                 )
-transmission_type = st.radio("Transmission Type",
-                             options=transmission_type_list,
-                             )
-number_of_gears = st.number_input("Number Of Gears",
-                                  min_value=1,
-                                  max_value=12,
-                                  step=1,
-                                  value=6)
-vehicle_class = st.selectbox("Vehicle Class",
-                             options=vehicle_class_list)
-model_year = st.number_input("Model Year",
-                             max_value=2030,
-                             min_value=1980,
-                             step=1,
-                             value=2025)
-manufacturer = st.selectbox("Manufacturer",
-                            options=manufacturer_list)
 
-result = False
-a1 = st.button("submit")
-result = submit_clicked()
+# Define input widgets for each feature
+number_of_cylinders = st.select_slider(
+    label=text_data["number_of_cylinders"]["label"],
+    options=text_data["number_of_cylinders"]["options"],
+    value=text_data["number_of_cylinders"]["value"]
+)
+engine_size = st.number_input(
+    label=text_data["engine_size"]["label"],
+    min_value=text_data["engine_size"]["min_value"],
+    max_value=text_data["engine_size"]["max_value"],
+    step=text_data["engine_size"]["step"],
+    value=text_data["engine_size"]["value"]
+)
+# ... (similar widget definitions for fuel_type, transmission_type, etc.)
+fuel_type = st.segmented_control(
+    label=text_data["fuel_type"]["label"],
+    options=text_data["fuel_type"]["options"],
+    default=text_data["fuel_type"]["default"]
+)
+transmission_type = st.radio(
+    label=text_data["transmission_type"]["label"],
+    options=text_data["transmission_type"]["options"]
+)
+number_of_gears = st.number_input(
+    label=text_data["number_of_gears"]["label"],
+    min_value=text_data["number_of_gears"]["min_value"],
+    max_value=text_data["number_of_gears"]["max_value"],
+    step=text_data["number_of_gears"]["step"],
+    value=text_data["number_of_gears"]["value"]
+)
+vehicle_class = st.selectbox(
+    label=text_data["vehicle_class"]["label"],
+    options=text_data["vehicle_class"]["options"]
+)
+model_year = st.number_input(
+    label=text_data["model_year"]["label"],
+    min_value=text_data["model_year"]["min_value"],
+    max_value=text_data["model_year"]["max_value"],
+    step=text_data["model_year"]["step"],
+    value=text_data["model_year"]["value"]
+)
+manufacturer = st.selectbox(
+    label=text_data["manufacturer"]["label"],
+    options=text_data["manufacturer"]["options"]
+)
 
-if result:
-    query_x_cat_ENCODED = pd.DataFrame(encoder.transform(
-        [[manufacturer, vehicle_class, transmission_type, fuel_type]]).toarray())
-    query_x_cat_ENCODED.columns = query_x_cat_ENCODED.columns.astype(str)
-    query_x_num = pd.DataFrame({"Model year": [model_year], "Engine size (L)": [engine_size/1000],
-                                "Cylinders": [number_of_cylinders], "Number of gears": [number_of_gears]})
-    query_x = pd.concat([query_x_cat_ENCODED, query_x_num], axis=1)
-    query_x_ENCODED_STANDARDED = standardizer.transform(query_x)
+# Button to trigger prediction
+predict_button = st.button(
+    label=text_data["predict_button"]["label"],
+    type=text_data["predict_button"]["type"]
+)
 
-    # st.dataframe(query_x_cat_ENCODED)
-    # st.dataframe(query_x_num)
-    # st.dataframe(query_x)
-    # st.dataframe(query_x_ENCODED_STANDARDED)
+if predict_button:
+    # Validate that no fields are empty
+    query = {
+        "manufacturer": manufacturer,
+        "vehicle_class": vehicle_class,
+        "transmission_type": transmission_type,
+        "fuel_type": fuel_type,
+        "model_year": model_year,
+        "engine_size": engine_size,
+        "number_of_cylinders": number_of_cylinders,
+        "number_of_gears": number_of_gears
+    }
+    
+    for k, v in query.items():
+        if v is None:
+            is_empty = True
+            st.write(text_data["fields_empty_message_text"])
+            break
+        else:
+            is_empty = False
 
-    query_predicted_fuel = model_fuel.predict(query_x_ENCODED_STANDARDED)[0][0]
-    query_predicted_CO2 = model_CO2.predict(query_x_ENCODED_STANDARDED)[0][0]
+    # If inputs are valid, preprocess and predict
+    if not is_empty:
+        results_showed = True
+        preprocessed = preprocess_query(query, encoder, standardizer)
+        # Generate predictions for each model
+        preds = {key: predict(loaded_models[key], preprocessed) for key in loaded_models}
 
-    result = False
-
-st.text(query_predicted_fuel)
-st.text(query_predicted_CO2)
+        # Display results
+        st.divider()
+        st.header(text_data["header4"])
+        # City, Highway, Combined Fuel Consumption
+        for res in ["city", "highway", "combined"]:
+            st.write(text_data[f"{res}_prediction"])
+            st.write(text_data["lr_prediction_text"], round(preds[f'{res}_lr'][0, 0], 2))
+            st.write(text_data["knn_prediction_text"], round(preds[f'{res}_knn'][0, 0], 2))
+            st.write(text_data["dt_prediction_text"], round(preds[f'{res}_dt'][0], 2))
+            mean_res = statistics.mean([preds[f'{res}_lr'][0, 0], preds[f'{res}_knn'][0, 0], preds[f'{res}_dt'][0]])
+            st.write(text_data["final_prediction_text"], round(mean_res, 2))
+        # CO2 emission
+        st.write(text_data["co2_prediction"])
+        st.write(text_data["lr_prediction_text"], round(preds['co2_lr'][0, 0], 2))
+        st.write(text_data["knn_prediction_text"], round(preds['co2_knn'][0, 0], 2))
+        st.write(text_data["dt_prediction_text"], round(preds['co2_dt'][0], 2))
+        mean_co2 = statistics.mean([preds['co2_lr'][0, 0], preds['co2_knn'][0, 0], preds['co2_dt'][0]])
+        st.write(text_data["final_prediction_text"], round(mean_co2, 2))
